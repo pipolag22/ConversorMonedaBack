@@ -22,12 +22,17 @@ namespace ConversionDeMonedas.Controllers
             try
             {
                 _userService.Create(dto);
+                return Ok("Creado correctamente");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                // Enviar un mensaje claro si el email ya está registrado
+                if (ex.Message == "El correo electrónico ya está registrado.")
+                {
+                    return Conflict(new { message = ex.Message });
+                }
+                return BadRequest(new { message = ex.Message });
             }
-            return Ok("Creado correctamente");
         }
     }
 }

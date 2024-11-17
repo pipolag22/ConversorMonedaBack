@@ -18,18 +18,27 @@ namespace ConversionDeMonedas.Services.Implementations
         }
 
         public void Create(CreateUserDto dto)
-        { 
+        {
+            
+            var existingUser = _CDMContext.usuario.FirstOrDefault(u => u.Email == dto.Email);
+            if (existingUser != null)
+            {
+                throw new Exception("El correo electrónico ya está registrado.");
+            }
+
+            
             Usuario newUser = new Usuario()
             {
                 Nombre = dto.Nombre,
                 Apellido = dto.Apellido,
                 Email = dto.Email,
                 Contrasenia = dto.Contrasenia,
-                Suscripcion = Suscripcion.Free, 
+                Suscripcion = Suscripcion.Free,
                 TotalConversiones = 10
             };
             _CDMContext.usuario.Add(newUser);
             _CDMContext.SaveChanges();
         }
+
     }
 }
