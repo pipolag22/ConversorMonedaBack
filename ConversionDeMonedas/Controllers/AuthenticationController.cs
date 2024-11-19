@@ -31,9 +31,9 @@ namespace Url_Shortener.Controllers
 
             if (user is null)
                 return Unauthorized();
-
+            //  clave simétrica
             var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Authentication:SecretForKey"]));
-
+            // credenciales de firma
             var credentials = new SigningCredentials(securityPassword, SecurityAlgorithms.HmacSha256);
 
 
@@ -43,6 +43,7 @@ namespace Url_Shortener.Controllers
             claimsForToken.Add(new Claim("family_name", user.Apellido));
             claimsForToken.Add(new Claim("Suscripcion", user.Suscripcion.ToString()));
 
+            //creacion 
             var jwtSecurityToken = new JwtSecurityToken(
               _config["Authentication:Issuer"],
               _config["Authentication:Audience"],
@@ -50,7 +51,7 @@ namespace Url_Shortener.Controllers
               DateTime.UtcNow,
               DateTime.UtcNow.AddHours(1),
               credentials);
-
+            // serializacion del token
             var tokenToReturn = new JwtSecurityTokenHandler()
                 .WriteToken(jwtSecurityToken);
 

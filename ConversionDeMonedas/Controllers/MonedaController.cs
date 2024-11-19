@@ -49,19 +49,23 @@ namespace ConversionDeMonedas.Controllers
         }
 
         [HttpPost("CrearMoneda")]
-
-        public IActionResult CreateCoin(CreateAndUpdateCoinDto dto)
+        public IActionResult CreateCoin([FromBody] CreateAndUpdateCoinDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier")).Value);
             try
             {
                 _coinService.CreateCoin(userId, dto);
+                return Ok("Creada Correctamente");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
-            return Ok("Creada Correctamente");
         }
 
         [HttpPut("EditarMoneda")]
